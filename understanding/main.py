@@ -35,12 +35,17 @@ losses = []
 # Training loop
 num_epochs = 256#00
 
+# https://github.com/mtzelepi/MALENA-internal/blob/main/Target1/run_forecasting.py
+# Univariate  or multi: exartatai apo thn dikh tous ylopoihsh an xrhsimopoioun mia h duo
+# Univariate  -> mono total consumption
+# multivarient -> kai thn thermokrasia, athens_temp
+
 for epoch in range(num_epochs):
     for i, data in enumerate(data_loader):
         inputs = data
 
         # rolling window approach, target is the next value in the time series
-        targets = torch.roll(data, -4)
+        targets = torch.roll(data, -24)
 
         # Forward pass
         outputs = model(inputs)
@@ -50,6 +55,7 @@ for epoch in range(num_epochs):
 
         # Backward pass and optimization
         optimizer.zero_grad()
+
         loss.backward()
 
         optimizer.step()

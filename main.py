@@ -1,8 +1,8 @@
 import os
 import sys
-from data_provider.data_factory import data_provider
 
-
+from dataset import get_data
+from get_model import get_configured_model
 from models.Informer import Model
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -31,15 +31,10 @@ import pickle
 import os
 
 
-model = Model()
+model = get_configured_model()
 
-train_data, train_loader = _get_data(flag='train')
-# vali_data, vali_loader = self._get_data(flag='val')
-# test_data, test_loader = self._get_data(flag='test')
+train_data, train_loader =  get_data()
 
-# path = os.path.join(self.args.checkpoints, setting)
-# if not os.path.exists(path):
-#     os.makedirs(path)
 
 time_now = time.time()
 
@@ -71,16 +66,17 @@ for epoch in range(train_epochs):
         batch_x_mark = batch_x_mark.float()
         batch_y_mark = batch_y_mark.float()
 
+        # TODO: bale na pairnie to args.pred_len etc apo to args object
         # decoder input
-        dec_inp = torch.zeros_like(batch_y[:, -pred_len:, :]).float()
-        dec_inp = torch.cat([batch_y[:, :label_len, :], dec_inp], dim=1).float()
+        dec_inp = torch.zeros_like(batch_y[:, -args.pred_len:, :]).float()
+        dec_inp = torch.cat([batch_y[:, :args.label_len, :], dec_inp], dim=1).float()
 
         # encoder - decoder
         outputs = model(batch_x, batch_x_mark, dec_inp, batch_y_mark)[0]
 
         f_dim = -1 #if self.args.features == 'MS' else 0
         # print(batch_y.shape)
-        batch_y = batch_y[:, -pred_len:, f_dim:]
+        batch_y = batch_y[:, -args.pred_len:, f_dim:]
         # print(batch_y.shape)
         # print(outputs.shape)
         loss = criterion(outputs, batch_y)
