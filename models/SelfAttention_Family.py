@@ -98,9 +98,13 @@ class ProbAttention(nn.Module):
         M_top = M.topk(n_top, sorted=False)[1]
 
         # use the reduced Q to calculate Q_K
-        Q_reduce = Q[torch.arange(B)[:, None, None],
-                   torch.arange(H)[None, :, None],
-                   M_top, :]  # factor*ln(L_q)
+        #TODO: add what he had
+        # Q_reduce = Q[torch.arange(B)[:, None, None], #[2,1,1]
+        #            torch.arange(H)[None, :, None], # [1,8,1]
+        #            M_top, :]  # factor*ln(L_q) # B = 2
+
+        # TODO: change this dummy. this works:
+        Q_reduce =Q[torch.arange(B)[:, None, None],  torch.arange(H)[None, :, None],[1],:]
         Q_K = torch.matmul(Q_reduce, K.transpose(-2, -1))  # factor*ln(L_q)*L_k
 
         return Q_K, M_top

@@ -7,6 +7,7 @@ import pandas as pd
 
 # Load the CSV file using pandas
 from config import getConfig
+from get_model import get_configured_model
 from models.Informer import Model
 
 from understanding.data_utilities import read_excel_and_forecast, TimeSeriesDataset
@@ -20,8 +21,8 @@ train_dataset = TimeSeriesDataset(input_data) #MyDataset(X_train_tensor, y_train
 train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)  # Replace batch_size with your desired batch size
 
 # Create an instance of the Model
-config = getConfig()
-model = Model(config )  # Replace configs with your desired model configurations
+model, args = get_configured_model() #config = getConfig()
+#model = Model(config )  # Replace configs with your desired model configurations
 
 # Define loss function and optimizer
 learning_rate = 0.001

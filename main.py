@@ -31,7 +31,7 @@ import pickle
 import os
 
 
-model = get_configured_model()
+model, args = get_configured_model()
 
 train_data, train_loader =  get_data()
 
@@ -66,7 +66,6 @@ for epoch in range(train_epochs):
         batch_x_mark = batch_x_mark.float()
         batch_y_mark = batch_y_mark.float()
 
-        # TODO: bale na pairnie to args.pred_len etc apo to args object
         # decoder input
         dec_inp = torch.zeros_like(batch_y[:, -args.pred_len:, :]).float()
         dec_inp = torch.cat([batch_y[:, :args.label_len, :], dec_inp], dim=1).float()
